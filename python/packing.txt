@@ -1,0 +1,4 @@
+e:
+cd E:\ML_Prj\TOOLS\screenshot\Screenshot4FPSimg\python
+conda activate E:\ML_Prj\CS2\YOLO_FPS\env
+python -m nuitka --onefile --follow-import-to=cv2,mss,numpy,os,threading,pynput,time scr_sht.py

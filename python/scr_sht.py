@@ -46,6 +46,7 @@ def screenshot_and_save():
     cv2.imwrite(file_name, img)
     # 更新计数器
     count += 1
+    time.sleep(0.01)
 
 shot = 0
 def mouse_click(x, y, button, pressed):
@@ -54,6 +55,7 @@ def mouse_click(x, y, button, pressed):
         shot = 1
     else:
         shot = 0
+    time.sleep(0.1)
 
 
 # 全局标志位
@@ -67,23 +69,31 @@ def listener_thread():
     listener.start()
     # 循环检查标志位
     while not terminate_flag:
+        time.sleep(0.1)  # 这里可以替换为其他需要执行的代码
         pass  # 可以做一些有用的工作，但同时要注意检查标志位
     # 结束监听
     listener.stop()
 
 if __name__ == "__main__":
     print("start")
+    threading.Thread(target=listener_thread).start()
     while True:
         try:
-            terminate_flag = True
+            # terminate_flag = True
             # 启动鼠标监听线程
-            threading.Thread(target=listener_thread).start()
+            # threading.Thread(target=listener_thread).start()
             if shot:
                 screenshot_and_save()
                 shot = 0
-                time.sleep(0.01)
+            time.sleep(0.01)
         except KeyboardInterrupt:
             terminate_flag = True
             print("end")
             break
 
+# if __name__ == "__main__":
+#     print("start")
+#     threading.Thread(target=listener_thread).start()
+#     while True:
+#         screenshot_and_save()
+#         time.sleep(0.2)
