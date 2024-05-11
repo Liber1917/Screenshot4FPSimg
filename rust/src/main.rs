@@ -1,6 +1,6 @@
 use screenshots::Screen;
 use image::{DynamicImage, RgbaImage};
-use winput::{Vk, Action};
+use winput::{Vk, Action, MouseMotion};
 use winput::message_loop;
 use std::time::{Instant, Duration};
 use std::path::{Path, PathBuf};
@@ -19,26 +19,8 @@ fn main() {
     // 定时截图的时间间隔（以秒为单位）
     let capture_interval = Duration::from_secs(1); // 每隔1秒截图一次
 
-    // 启动键盘事件监视的线程
-    let kb_thread = thread::spawn(move || {
-        let receiver = message_loop::start().unwrap();
-        loop {
-            match receiver.next_event() {
-                message_loop::Event::Keyboard {
-                    vk,
-                    action: Action::Press,
-                    ..
-                } => {
-                    if vk == Vk::Escape {
-                        break;
-                    } else {
-                        println!("{:?} was pressed!", vk);
-                    }
-                },
-                _ => (),
-            }
-        }
-    });
+    // 启动消息循环并获取接收器
+    let receiver = message_loop::start().unwrap();
 
     // 定时截图的线程
     let capture_thread = thread::spawn(move || {
@@ -67,8 +49,32 @@ fn main() {
         }
     });
 
-    // 等待键盘事件监视线程和定时截图线程结束
-    kb_thread.join().unwrap();
+    // 进入事件处理循环
+    loop {
+        // 从接收器中获取下一个事件
+        match receiver.next_event() {
+            // // 处理键盘事件
+            // message_loop::Event::Keyboard { vk, action, .. } => {
+            //     println!("Keyboard event - Virtual Key Code: {:?}, Action: {:?}", vk, action);
+            // },
+            // // 处理鼠标移动事件
+            // message_loop::Event::MouseMoveRelative { x, y } => {
+            //     println!("Mouse moved relative - X: {}, Y: {}", x, y);
+            // },
+            // 处理鼠标按键事件
+            message_loop::Event::MouseButton { action, button } => {
+                println!("Mouse button event - Action: {:?}, Button: {:?}", action, button);
+            },
+            // // 处理鼠标滚轮事件
+            // message_loop::Event::MouseWheel { delta, direction } => {
+            //     println!("Mouse wheel event - Delta: {}, Direction: {:?}", delta, direction);
+            // },
+            // 其他事件暂时不处理，直接忽略
+            _ => (),
+        }
+    }
+
+    // 等待定时截图线程结束
     capture_thread.join().unwrap();
 
     println!("运行耗时: {:?}", start.elapsed());
