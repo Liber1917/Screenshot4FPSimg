@@ -9,7 +9,7 @@ fn main() {
     let start = Instant::now();
 
     // 获取上级目录的路径
-    let parent_dir = Path::new("..");
+    let parent_dir = Path::new(".");
 
     // 创建名为 "images" 的文件夹，如果不存在的话
     let images_dir = parent_dir.join("Scr_images");
@@ -18,7 +18,7 @@ fn main() {
     }
 
     // 定时截图的时间间隔（以秒为单位）
-    let capture_interval = Duration::from_secs(1); // 每隔60秒截图一次
+    let capture_interval = Duration::from_secs(1); // 每隔1秒截图一次
 
     let mut image_counter = 0; // 用于保存图片的序号
 
